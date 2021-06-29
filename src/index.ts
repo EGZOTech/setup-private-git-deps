@@ -15,6 +15,7 @@ async function run(): Promise<void> {
         info(`Found ${dependenciesLines.length / 2} dependencies`);
 
         if (!fs.existsSync("~/.ssh")) {
+            info(`Creating .ssh directory`);
             fs.mkdirSync("~/.ssh");
         }
 

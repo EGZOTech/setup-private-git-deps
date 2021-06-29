@@ -579,6 +579,10 @@ function run() {
                 throw new Error("Dependencies have invalid format.");
             }
             (0,core.info)(`Found ${dependenciesLines.length / 2} dependencies`);
+            if (!external_fs_.existsSync("~/.ssh")) {
+                (0,core.info)(`Creating .ssh directory`);
+                external_fs_.mkdirSync("~/.ssh");
+            }
             external_child_process_namespaceObject.execSync(`ssh-keyscan github.com >> ~/.ssh/known_hosts`);
             for (let i = 0; i < dependenciesLines.length; i += 2) {
                 const repoBuffer = Buffer.from(dependenciesLines[i], "base64");
