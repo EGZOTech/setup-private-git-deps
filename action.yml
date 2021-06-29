@@ -12,7 +12,12 @@ inputs:
         privkey:base64
         ...
     required: true
-
+  export-script:
+    description: |-
+      Exports a script file with specified name which can be used for accessing
+      dependencies in Dockerfile. Dependencies are passed to the script through
+      DEPENDENCIES environment variable.
+    required: false
 runs:
   using: "node12"
   main: "dist/index.js"

@@ -4,8 +4,15 @@ import * as childProcess from "child_process";
 
 async function run(): Promise<void> {
     try {
+        const exportScript = getInput('export-script', { required: false });
+
         const dependencies = getInput('dependencies', { required: true });
         const dependenciesLines = dependencies.split("\n").filter(v => v.length > 0);
+
+        if (exportScript) {
+            const dependenciesScript = __dirname + "/../dependencies.sh";
+            fs.writeFileSync(exportScript, fs.readFileSync(dependenciesScript));
+        }
 
         if (dependenciesLines.length % 2 !== 0) {
             throw new Error("Dependencies have invalid format.");
