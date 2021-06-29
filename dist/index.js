@@ -578,6 +578,7 @@ function run() {
                 const dependenciesScript = __nccwpck_require__.ab + "dependencies.sh";
                 (0,core.info)(`Exporting ${exportScript} script`);
                 external_fs_.writeFileSync(exportScript, external_fs_.readFileSync(__nccwpck_require__.ab + "dependencies.sh"));
+                external_fs_.chmodSync(exportScript, 0o555);
                 if (exportOnly) {
                     return;
                 }

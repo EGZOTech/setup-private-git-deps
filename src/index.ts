@@ -14,6 +14,7 @@ async function run(): Promise<void> {
             const dependenciesScript = __dirname + "/../dependencies.sh";
             info(`Exporting ${exportScript} script`);
             fs.writeFileSync(exportScript, fs.readFileSync(dependenciesScript));
+            fs.chmodSync(exportScript, 0o555);
 
             if (exportOnly) {
                 return;
