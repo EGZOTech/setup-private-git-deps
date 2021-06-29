@@ -24,17 +24,17 @@ async function run(): Promise<void> {
         for (let i = 0; i < dependenciesLines.length; i += 2) {
             const repoBuffer = Buffer.from(dependenciesLines[i], "base64");
             const keyBuffer = Buffer.from(dependenciesLines[i + 1], "base64");
-            const repo = repoBuffer.toString("utf-8");
+            const repo = repoBuffer.toString("utf-8").trim();
             const key = keyBuffer.toString("utf-8");
 
             const index = i / 2;
 
             info(`Adding ${repo} dependency`);
 
-            fs.writeFileSync(`~/.ssh/github.com-repo-${index}`, key);
-            fs.chmodSync(`~/.ssh/github.com-repo-${index}`, 0o400);
+            fs.writeFileSync(`${process.env.HOME}/.ssh/github.com-repo-${index}`, key);
+            fs.chmodSync(`${process.env.HOME}/.ssh/github.com-repo-${index}`, 0o400);
 
-            fs.appendFileSync(`~/.ssh/config`,
+            fs.appendFileSync(`${process.env.HOME}/.ssh/config`,
                 `Host github.com-repo-${index}\n` +
                 `    Hostname github.com\n` +
                 `    IdentityFile ${process.env.HOME}/.ssh/github.com-repo-${index}\n\n`)

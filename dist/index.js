@@ -585,13 +585,13 @@ function run() {
             for (let i = 0; i < dependenciesLines.length; i += 2) {
                 const repoBuffer = Buffer.from(dependenciesLines[i], "base64");
                 const keyBuffer = Buffer.from(dependenciesLines[i + 1], "base64");
-                const repo = repoBuffer.toString("utf-8");
+                const repo = repoBuffer.toString("utf-8").trim();
                 const key = keyBuffer.toString("utf-8");
                 const index = i / 2;
                 (0,core.info)(`Adding ${repo} dependency`);
-                external_fs_.writeFileSync(`~/.ssh/github.com-repo-${index}`, key);
-                external_fs_.chmodSync(`~/.ssh/github.com-repo-${index}`, 0o400);
-                external_fs_.appendFileSync(`~/.ssh/config`, `Host github.com-repo-${index}\n` +
+                external_fs_.writeFileSync(`${process.env.HOME}/.ssh/github.com-repo-${index}`, key);
+                external_fs_.chmodSync(`${process.env.HOME}/.ssh/github.com-repo-${index}`, 0o400);
+                external_fs_.appendFileSync(`${process.env.HOME}/.ssh/config`, `Host github.com-repo-${index}\n` +
                     `    Hostname github.com\n` +
                     `    IdentityFile ${process.env.HOME}/.ssh/github.com-repo-${index}\n\n`);
                 external_child_process_namespaceObject.execSync(`git config --global --add url."git@github.com-repo-${index}:${repo}".insteadOf https://github.com/${repo}`);
