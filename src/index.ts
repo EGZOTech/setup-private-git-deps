@@ -14,6 +14,10 @@ async function run(): Promise<void> {
 
         info(`Found ${dependenciesLines.length / 2} dependencies`);
 
+        if (!fs.existsSync("~/.ssh")) {
+            fs.mkdirSync("~/.ssh");
+        }
+
         childProcess.execSync(`ssh-keyscan github.com >> ~/.ssh/known_hosts`);
 
         for (let i = 0; i < dependenciesLines.length; i += 2) {
