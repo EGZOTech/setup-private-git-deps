@@ -5,17 +5,32 @@ import * as childProcess from "child_process";
 async function run(): Promise<void> {
     try {
         const exportScript = getInput('export-script', { required: false });
+        const exportOnly = getInput('export-only', { required: false });
 
         const dependencies = getInput('dependencies', { required: true });
         const dependenciesLines = dependencies.split("\n").filter(v => v.length > 0);
 
         if (exportScript) {
             const dependenciesScript = __dirname + "/../dependencies.sh";
+            info(`Exporting ${exportScript} script`);
             fs.writeFileSync(exportScript, fs.readFileSync(dependenciesScript));
+
+            if (exportOnly) {
+                return;
+            }
+        }
+
+        if (exportOnly && !exportScript) {
+            throw new Error("Missing export-script parameter value");
         }
 
         if (dependenciesLines.length % 2 !== 0) {
             throw new Error("Dependencies have invalid format.");
+        }
+
+        if (dependenciesLines.length === 0) {
+            info(`No dependencies found`);
+            return;
         }
 
         info(`Found ${dependenciesLines.length / 2} dependencies`);

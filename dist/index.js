@@ -571,14 +571,26 @@ function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const exportScript = (0,core.getInput)('export-script', { required: false });
+            const exportOnly = (0,core.getInput)('export-only', { required: false });
             const dependencies = (0,core.getInput)('dependencies', { required: true });
             const dependenciesLines = dependencies.split("\n").filter(v => v.length > 0);
             if (exportScript) {
                 const dependenciesScript = __nccwpck_require__.ab + "dependencies.sh";
+                (0,core.info)(`Exporting ${exportScript} script`);
                 external_fs_.writeFileSync(exportScript, external_fs_.readFileSync(__nccwpck_require__.ab + "dependencies.sh"));
+                if (exportOnly) {
+                    return;
+                }
+            }
+            if (exportOnly && !exportScript) {
+                throw new Error("Missing export-script parameter value");
             }
             if (dependenciesLines.length % 2 !== 0) {
                 throw new Error("Dependencies have invalid format.");
+            }
+            if (dependenciesLines.length === 0) {
+                (0,core.info)(`No dependencies found`);
+                return;
             }
             (0,core.info)(`Found ${dependenciesLines.length / 2} dependencies`);
             const sshDir = `${process.env.HOME}/.ssh`;

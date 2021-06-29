@@ -18,6 +18,10 @@ inputs:
       dependencies in Dockerfile. Dependencies are passed to the script through
       DEPENDENCIES environment variable.
     required: false
+  export-only:
+    description: |-
+      Only does the export-script
+    required: false
 runs:
   using: "node12"
   main: "dist/index.js"
