@@ -552,8 +552,6 @@ __nccwpck_require__.r(__webpack_exports__);
 var core = __nccwpck_require__(186);
 // EXTERNAL MODULE: external "fs"
 var external_fs_ = __nccwpck_require__(747);
-// EXTERNAL MODULE: external "path"
-var external_path_ = __nccwpck_require__(622);
 ;// CONCATENATED MODULE: external "child_process"
 const external_child_process_namespaceObject = require("child_process");;
 ;// CONCATENATED MODULE: ./src/index.ts
@@ -569,7 +567,6 @@ var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _argume
 
 
 
-
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -579,8 +576,8 @@ function run() {
                 throw new Error("Dependencies have invalid format.");
             }
             (0,core.info)(`Found ${dependenciesLines.length / 2} dependencies`);
-            if (!external_fs_.existsSync("~/.ssh")) {
-                const sshDir = external_path_.resolve("~/.ssh");
+            const sshDir = `${process.env.HOME}/.ssh`;
+            if (!external_fs_.existsSync(sshDir)) {
                 (0,core.info)(`Creating ${sshDir} directory`);
                 external_fs_.mkdirSync(sshDir, { recursive: true });
             }
@@ -596,7 +593,7 @@ function run() {
                 external_fs_.chmodSync(`~/.ssh/github.com-repo-${index}`, 0o400);
                 external_fs_.appendFileSync(`~/.ssh/config`, `Host github.com-repo-${index}\n` +
                     `    Hostname github.com\n` +
-                    `    IdentityFile ${external_path_.resolve(`~/.ssh/github.com-repo-${index}`)}\n\n`);
+                    `    IdentityFile ${process.env.HOME}/.ssh/github.com-repo-${index}\n\n`);
                 external_child_process_namespaceObject.execSync(`git config --global --add url."git@github.com-repo-${index}:${repo}".insteadOf https://github.com/${repo}`);
                 external_child_process_namespaceObject.execSync(`git config --global --add url."git@github.com-repo-${index}:${repo}".insteadOf ssh://git@github.com/${repo}`);
             }

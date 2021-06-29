@@ -1,6 +1,5 @@
 import { getInput, setFailed, info } from "@actions/core";
 import * as fs from "fs";
-import * as path from "path";
 import * as childProcess from "child_process";
 
 async function run(): Promise<void> {
@@ -13,9 +12,9 @@ async function run(): Promise<void> {
         }
 
         info(`Found ${dependenciesLines.length / 2} dependencies`);
+        const sshDir = `${process.env.HOME}/.ssh`;
 
-        if (!fs.existsSync("~/.ssh")) {
-            const sshDir = path.resolve("~/.ssh");
+        if (!fs.existsSync(sshDir)) {
             info(`Creating ${sshDir} directory`);
             fs.mkdirSync(sshDir, { recursive: true });
         }
@@ -38,7 +37,7 @@ async function run(): Promise<void> {
             fs.appendFileSync(`~/.ssh/config`,
                 `Host github.com-repo-${index}\n` +
                 `    Hostname github.com\n` +
-                `    IdentityFile ${path.resolve(`~/.ssh/github.com-repo-${index}`)}\n\n`)
+                `    IdentityFile ${process.env.HOME}/.ssh/github.com-repo-${index}\n\n`)
 
             childProcess.execSync(`git config --global --add url."git@github.com-repo-${index}:${repo}".insteadOf https://github.com/${repo}`);
             childProcess.execSync(`git config --global --add url."git@github.com-repo-${index}:${repo}".insteadOf ssh://git@github.com/${repo}`);
