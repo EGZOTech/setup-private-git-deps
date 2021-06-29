@@ -16,7 +16,7 @@ async function run(): Promise<void> {
 
         if (!fs.existsSync("~/.ssh")) {
             info(`Creating .ssh directory`);
-            fs.mkdirSync("~/.ssh");
+            fs.mkdirSync(path.resolve("~/.ssh"), { recursive: true });
         }
 
         childProcess.execSync(`ssh-keyscan github.com >> ~/.ssh/known_hosts`);
