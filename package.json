@@ -1,0 +1,27 @@
+{
+  "name": "setup-private-git-deps",
+  "version": "1.0.0",
+  "description": "Setup private git dependencies",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "ncc build src/index.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EGZOTech/setup-private-git-deps.git"
+  },
+  "author": "EGZOTech",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/EGZOTech/setup-private-git-deps/issues"
+  },
+  "homepage": "https://github.com/EGZOTech/setup-private-git-deps#readme",
+  "dependencies": {
+    "@actions/core": "^1.4.0"
+  },
+  "devDependencies": {
+    "@types/node": "^15.12.5",
+    "@vercel/ncc": "^0.28.6",
+    "typescript": "^4.3.4"
+  }
+}

@@ -1,0 +1,18 @@
+name: Setup Private Git Dependencies
+description: Setup Private Git Dependencies
+author: EGZOTech
+
+inputs:
+  dependencies:
+    description: |-
+      Private dependencies which will be added to Git in format:
+        org/repo:base64
+        privkey:base64
+        org/repo:base64
+        privkey:base64
+        ...
+    required: true
+
+runs:
+  using: "node12"
+  main: "dist/index.js"
