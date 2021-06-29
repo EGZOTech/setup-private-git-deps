@@ -580,8 +580,9 @@ function run() {
             }
             (0,core.info)(`Found ${dependenciesLines.length / 2} dependencies`);
             if (!external_fs_.existsSync("~/.ssh")) {
-                (0,core.info)(`Creating .ssh directory`);
-                external_fs_.mkdirSync(external_path_.resolve("~/.ssh"), { recursive: true });
+                const sshDir = external_path_.resolve("~/.ssh");
+                (0,core.info)(`Creating ${sshDir} directory`);
+                external_fs_.mkdirSync(sshDir, { recursive: true });
             }
             external_child_process_namespaceObject.execSync(`ssh-keyscan github.com >> ~/.ssh/known_hosts`);
             for (let i = 0; i < dependenciesLines.length; i += 2) {

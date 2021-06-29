@@ -15,8 +15,9 @@ async function run(): Promise<void> {
         info(`Found ${dependenciesLines.length / 2} dependencies`);
 
         if (!fs.existsSync("~/.ssh")) {
-            info(`Creating .ssh directory`);
-            fs.mkdirSync(path.resolve("~/.ssh"), { recursive: true });
+            const sshDir = path.resolve("~/.ssh");
+            info(`Creating ${sshDir} directory`);
+            fs.mkdirSync(sshDir, { recursive: true });
         }
 
         childProcess.execSync(`ssh-keyscan github.com >> ~/.ssh/known_hosts`);
