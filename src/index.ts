@@ -6,6 +6,8 @@ async function run(): Promise<void> {
     try {
         const exportScript = getInput('export-script', { required: false });
         const exportOnly = getInput('export-only', { required: false });
+        const customPrepare = getInput('custom-prepare', { required: false });
+        const customCleanup = getInput('custom-cleanup', { required: false });
 
         const dependencies = getInput('dependencies', { required: true });
         const dependenciesLines = dependencies.split("\n").filter(v => v.length > 0);
@@ -13,7 +15,19 @@ async function run(): Promise<void> {
         if (exportScript) {
             const dependenciesScript = __dirname + "/../dependencies.sh";
             info(`Exporting ${exportScript} script`);
-            fs.writeFileSync(exportScript, fs.readFileSync(dependenciesScript));
+            let dependenciesScriptContents = fs.readFileSync(dependenciesScript, { encoding: "utf-8" });
+
+            if (customPrepare) {
+                info(`Injecting custom prepare`);
+                dependenciesScriptContents = dependenciesScriptContents.replace(/# INJECT: custom-prepare/, customPrepare);
+            }
+
+            if (customCleanup) {
+                info(`Injecting custom cleanup`);
+                dependenciesScriptContents = dependenciesScriptContents.replace(/# INJECT: custom-cleanup/, customCleanup);
+            }
+
+            fs.writeFileSync(exportScript, dependenciesScriptContents);
             fs.chmodSync(exportScript, 0o555);
 
             if (exportOnly) {

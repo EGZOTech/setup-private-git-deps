@@ -5,6 +5,8 @@ cleanup() {
     echo "Removing .dependencies"
     rm -rf .dependencies
     git config --unset --global core.sshCommand
+
+# INJECT: custom-cleanup
 }
 
 if [ -z "$DEPENDENCIES" ]; then
@@ -73,6 +75,8 @@ git config --global --list
 
 echo "SSH config"
 cat $PWD/.dependencies/ssh-config
+
+# INJECT: custom-prepare
 
 export GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no -F $PWD/.dependencies/ssh-config"
 $@

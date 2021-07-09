@@ -572,12 +572,23 @@ function run() {
         try {
             const exportScript = (0,core.getInput)('export-script', { required: false });
             const exportOnly = (0,core.getInput)('export-only', { required: false });
+            const customPrepare = (0,core.getInput)('custom-prepare', { required: false });
+            const customCleanup = (0,core.getInput)('custom-cleanup', { required: false });
             const dependencies = (0,core.getInput)('dependencies', { required: true });
             const dependenciesLines = dependencies.split("\n").filter(v => v.length > 0);
             if (exportScript) {
                 const dependenciesScript = __nccwpck_require__.ab + "dependencies.sh";
                 (0,core.info)(`Exporting ${exportScript} script`);
-                external_fs_.writeFileSync(exportScript, external_fs_.readFileSync(__nccwpck_require__.ab + "dependencies.sh"));
+                let dependenciesScriptContents = external_fs_.readFileSync(__nccwpck_require__.ab + "dependencies.sh", { encoding: "utf-8" });
+                if (customPrepare) {
+                    (0,core.info)(`Injecting custom prepare`);
+                    dependenciesScriptContents = dependenciesScriptContents.replace(/# INJECT: custom-prepare/, customPrepare);
+                }
+                if (customCleanup) {
+                    (0,core.info)(`Injecting custom cleanup`);
+                    dependenciesScriptContents = dependenciesScriptContents.replace(/# INJECT: custom-cleanup/, customCleanup);
+                }
+                external_fs_.writeFileSync(exportScript, dependenciesScriptContents);
                 external_fs_.chmodSync(exportScript, 0o555);
                 if (exportOnly) {
                     return;
