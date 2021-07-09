@@ -22,6 +22,14 @@ inputs:
     description: |-
       Only does the export-script
     required: false
+  custom-prepare:
+    description: |-
+      Custom shell script which will be executed before installing dependencies
+    required: false
+  custom-cleanup:
+    description: |-
+      Custom shell script which will be executed after installing dependencies
+    required: false
 runs:
   using: "node12"
   main: "dist/index.js"
