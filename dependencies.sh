@@ -74,4 +74,5 @@ git config --global --list
 echo "SSH config"
 cat $PWD/.dependencies/ssh-config
 
+export GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no -F $PWD/.dependencies/ssh-config"
 $@
