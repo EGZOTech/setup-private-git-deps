@@ -658,8 +658,7 @@ function cleanup() {
         }
     });
 }
-(0,core.info)(JSON.stringify(process.env));
-if (Boolean(process.env['STATE_isPost'])) {
+if (global.isCleaningUp) {
     cleanup();
 }
 else {

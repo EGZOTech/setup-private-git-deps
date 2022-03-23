@@ -112,9 +112,7 @@ async function cleanup(): Promise<void> {
     }
 }
 
-info(JSON.stringify(process.env));
-
-if (Boolean(process.env['STATE_isPost'])) {
+if ((global as any).isCleaningUp) {
     cleanup();
 }
 else {
