@@ -631,8 +631,10 @@ function run() {
                 external_child_process_namespaceObject.execSync(`git config --global --add url."git@github.com-repo-${index}:${repo}".insteadOf https://github.com/${repo}`);
                 external_child_process_namespaceObject.execSync(`git config --global --add url."git@github.com-repo-${index}:${repo}".insteadOf ssh://git@github.com/${repo}`);
             }
-            (0,core.info)("Git config");
+            (0,core.info)("Git config global");
             (0,core.info)(external_child_process_namespaceObject.execSync(`git config --global --list`).toString("utf-8"));
+            (0,core.info)("Git config local");
+            (0,core.info)(external_child_process_namespaceObject.execSync(`git config --local --list`).toString("utf-8"));
             (0,core.info)("SSH config");
             (0,core.info)(external_child_process_namespaceObject.execSync(`cat ~/.ssh/config`).toString("utf-8"));
         }
