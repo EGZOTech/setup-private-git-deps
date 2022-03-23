@@ -114,12 +114,16 @@ async function run(): Promise<void> {
         const sshCommand = childProcess.execSync(`git config --local --get core.sshcommand`).toString("utf-8");
 
         if (sshCommand) {
+            info("Found core.sshcommand in local git config. Checking for identity key override.");
+
             const sshCommandArgs = parseArgumentsIntoArray(sshCommand);
             const identityFile = sshCommandArgs.indexOf("-i");
 
             if (identityFile >= 0) {
                 // If sshcommand in git config overrides identity file we need to remove it
                 // otherwise our hosts in .ssh/config will not be able to use their own SSH keys
+                info("Removing identity key override from local git config.");
+                
                 sshCommandArgs.splice(identityFile, 2);
                 childProcess.execSync(`git config --local --unset-all core.sshcommand && git config --local --add core.sshcommand '${sshCommandArgs.join(" ")}'`);
             }
