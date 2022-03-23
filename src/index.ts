@@ -136,9 +136,6 @@ async function run(): Promise<void> {
         info("Git config global")
         info(childProcess.execSync(`git config --global --list`).toString("utf-8"));
 
-        info("Git config local")
-        info(childProcess.execSync(`git config --local --list`).toString("utf-8"));
-
         info("SSH config")
         info(childProcess.execSync(`cat ~/.ssh/config`).toString("utf-8"));
     }
