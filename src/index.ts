@@ -7,6 +7,31 @@ const customCleanup = getInput('custom-cleanup', { required: false });
 const exportOnly = getInput('export-only', { required: false });
 const exportScript = getInput('export-script', { required: false });
 
+function parseArgumentsIntoArray(args: string) {
+    const split = args.split(" ");
+    const result: string[] = [];
+    let isInString = false;
+
+    for (let i = 0; i < split.length; i++) {       
+        if (isInString) {
+            result[result.length - 1] = result[result.length - 1] + split[i];
+        }
+        else {
+            result.push(split[i]);
+        }
+
+        if (split[i].startsWith("\"")) {
+            isInString = true;
+        }
+        
+        if (split[i].endsWith("\"") && !split[i].endsWith("\\\"")) {
+            isInString = false;
+        }
+    }
+
+    return result;
+}
+
 async function run(): Promise<void> {
     try {
         const dependencies = getInput('dependencies', { required: true });
@@ -84,6 +109,20 @@ async function run(): Promise<void> {
 
             childProcess.execSync(`git config --global --add url."git@github.com-repo-${index}:${repo}".insteadOf https://github.com/${repo}`);
             childProcess.execSync(`git config --global --add url."git@github.com-repo-${index}:${repo}".insteadOf ssh://git@github.com/${repo}`);
+        }
+
+        const sshCommand = childProcess.execSync(`git config --local --get core.sshcommand`).toString("utf-8");
+
+        if (sshCommand) {
+            const sshCommandArgs = parseArgumentsIntoArray(sshCommand);
+            const identityFile = sshCommandArgs.indexOf("-i");
+
+            if (identityFile >= 0) {
+                // If sshcommand in git config overrides identity file we need to remove it
+                // otherwise our hosts in .ssh/config will not be able to use their own SSH keys
+                sshCommandArgs.splice(identityFile, 2);
+                childProcess.execSync(`git config --local --unset-all core.sshcommand && git config --local --add core.sshcommand '${sshCommandArgs}'`);
+            }
         }
 
         info("Git config global")
