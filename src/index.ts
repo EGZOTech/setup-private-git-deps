@@ -86,8 +86,11 @@ async function run(): Promise<void> {
             childProcess.execSync(`git config --global --add url."git@github.com-repo-${index}:${repo}".insteadOf ssh://git@github.com/${repo}`);
         }
 
-        info("Git config")
+        info("Git config global")
         info(childProcess.execSync(`git config --global --list`).toString("utf-8"));
+
+        info("Git config local")
+        info(childProcess.execSync(`git config --local --list`).toString("utf-8"));
 
         info("SSH config")
         info(childProcess.execSync(`cat ~/.ssh/config`).toString("utf-8"));
