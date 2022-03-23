@@ -651,7 +651,11 @@ function run() {
                 external_child_process_namespaceObject.execSync(`git config --global --add url."git@github.com-repo-${index}:${repo}".insteadOf https://github.com/${repo}`);
                 external_child_process_namespaceObject.execSync(`git config --global --add url."git@github.com-repo-${index}:${repo}".insteadOf ssh://git@github.com/${repo}`);
             }
-            const sshCommand = external_child_process_namespaceObject.execSync(`git config --local --get core.sshcommand`).toString("utf-8");
+            let sshCommand = "";
+            try {
+                external_child_process_namespaceObject.execSync(`git config --local --get core.sshcommand`).toString("utf-8");
+            }
+            catch (_a) { }
             if (sshCommand) {
                 (0,core.info)("Found core.sshcommand in local git config. Checking for identity key override.");
                 const sshCommandArgs = parseArgumentsIntoArray(sshCommand);
