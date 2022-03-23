@@ -571,6 +571,26 @@ const customPrepare = (0,core.getInput)('custom-prepare', { required: false });
 const customCleanup = (0,core.getInput)('custom-cleanup', { required: false });
 const exportOnly = (0,core.getInput)('export-only', { required: false });
 const exportScript = (0,core.getInput)('export-script', { required: false });
+function parseArgumentsIntoArray(args) {
+    const split = args.split(" ");
+    const result = [];
+    let isInString = false;
+    for (let i = 0; i < split.length; i++) {
+        if (isInString) {
+            result[result.length - 1] = result[result.length - 1] + split[i];
+        }
+        else {
+            result.push(split[i]);
+        }
+        if (split[i].startsWith("\"")) {
+            isInString = true;
+        }
+        if (split[i].endsWith("\"") && !split[i].endsWith("\\\"")) {
+            isInString = false;
+        }
+    }
+    return result;
+}
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -630,6 +650,19 @@ function run() {
                     `    IdentityFile ${process.env.HOME}/.ssh/github.com-repo-${index}\n\n`);
                 external_child_process_namespaceObject.execSync(`git config --global --add url."git@github.com-repo-${index}:${repo}".insteadOf https://github.com/${repo}`);
                 external_child_process_namespaceObject.execSync(`git config --global --add url."git@github.com-repo-${index}:${repo}".insteadOf ssh://git@github.com/${repo}`);
+            }
+            const sshCommand = external_child_process_namespaceObject.execSync(`git config --local --get core.sshcommand`).toString("utf-8");
+            if (sshCommand) {
+                (0,core.info)("Found core.sshcommand in local git config. Checking for identity key override.");
+                const sshCommandArgs = parseArgumentsIntoArray(sshCommand);
+                const identityFile = sshCommandArgs.indexOf("-i");
+                if (identityFile >= 0) {
+                    // If sshcommand in git config overrides identity file we need to remove it
+                    // otherwise our hosts in .ssh/config will not be able to use their own SSH keys
+                    (0,core.info)("Removing identity key override from local git config.");
+                    sshCommandArgs.splice(identityFile, 2);
+                    external_child_process_namespaceObject.execSync(`git config --local --unset-all core.sshcommand && git config --local --add core.sshcommand '${sshCommandArgs.join(" ")}'`);
+                }
             }
             (0,core.info)("Git config global");
             (0,core.info)(external_child_process_namespaceObject.execSync(`git config --global --list`).toString("utf-8"));
