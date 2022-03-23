@@ -111,7 +111,12 @@ async function run(): Promise<void> {
             childProcess.execSync(`git config --global --add url."git@github.com-repo-${index}:${repo}".insteadOf ssh://git@github.com/${repo}`);
         }
 
-        const sshCommand = childProcess.execSync(`git config --local --get core.sshcommand`).toString("utf-8");
+        let sshCommand = ""; 
+        
+        try {
+            childProcess.execSync(`git config --local --get core.sshcommand`).toString("utf-8");
+        }
+        catch {}
 
         if (sshCommand) {
             info("Found core.sshcommand in local git config. Checking for identity key override.");
