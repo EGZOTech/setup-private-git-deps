@@ -661,6 +661,8 @@ function run() {
                     // otherwise our hosts in .ssh/config will not be able to use their own SSH keys
                     (0,core.info)("Removing identity key override from local git config.");
                     sshCommandArgs.splice(identityFile, 2);
+                    // TODO: Fix this in the future. We should not remove whole core.sshcommand, only remove '-i' argument with its value.
+                    //       But for some reason removing this argument broke whole SSH command.
                     external_child_process_namespaceObject.execSync(`git config --local --unset-all core.sshcommand`);
                     // childProcess.execSync(`git config --local --unset-all core.sshcommand && git config --local --add core.sshcommand '${sshCommandArgs.join(" ")}'`);
                 }

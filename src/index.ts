@@ -125,6 +125,9 @@ async function run(): Promise<void> {
                 info("Removing identity key override from local git config.");
                 
                 sshCommandArgs.splice(identityFile, 2);
+             
+                // TODO: Fix this in the future. We should not remove whole core.sshcommand, only remove '-i' argument with its value.
+                //       But for some reason removing this argument broke whole SSH command.
                 childProcess.execSync(`git config --local --unset-all core.sshcommand`);
                 // childProcess.execSync(`git config --local --unset-all core.sshcommand && git config --local --add core.sshcommand '${sshCommandArgs.join(" ")}'`);
             }
