@@ -121,7 +121,7 @@ async function run(): Promise<void> {
                 // If sshcommand in git config overrides identity file we need to remove it
                 // otherwise our hosts in .ssh/config will not be able to use their own SSH keys
                 sshCommandArgs.splice(identityFile, 2);
-                childProcess.execSync(`git config --local --unset-all core.sshcommand && git config --local --add core.sshcommand '${sshCommandArgs}'`);
+                childProcess.execSync(`git config --local --unset-all core.sshcommand && git config --local --add core.sshcommand '${sshCommandArgs.join(" ")}'`);
             }
         }
 
