@@ -567,13 +567,13 @@ var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _argume
 
 
 
+const customPrepare = (0,core.getInput)('custom-prepare', { required: false });
+const customCleanup = (0,core.getInput)('custom-cleanup', { required: false });
+const exportOnly = (0,core.getInput)('export-only', { required: false });
+const exportScript = (0,core.getInput)('export-script', { required: false });
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const exportScript = (0,core.getInput)('export-script', { required: false });
-            const exportOnly = (0,core.getInput)('export-only', { required: false });
-            const customPrepare = (0,core.getInput)('custom-prepare', { required: false });
-            const customCleanup = (0,core.getInput)('custom-cleanup', { required: false });
             const dependencies = (0,core.getInput)('dependencies', { required: true });
             const dependenciesLines = dependencies.split("\n").filter(v => v.length > 0);
             if (exportScript) {
@@ -604,6 +604,11 @@ function run() {
                 (0,core.info)(`No dependencies found`);
                 return;
             }
+            if (customPrepare) {
+                (0,core.info)(`Running custom prepare`);
+                const output = external_child_process_namespaceObject.execSync(customPrepare).toString("utf-8");
+                (0,core.info)(`Custom prepare output:\n${output}`);
+            }
             (0,core.info)(`Found ${dependenciesLines.length / 2} dependencies`);
             const sshDir = `${process.env.HOME}/.ssh`;
             if (!external_fs_.existsSync(sshDir)) {
@@ -632,11 +637,33 @@ function run() {
             (0,core.info)(external_child_process_namespaceObject.execSync(`cat ~/.ssh/config`).toString("utf-8"));
         }
         catch (error) {
-            (0,core.setFailed)(error.message);
+            (0,core.setFailed)(error instanceof Error ? error : error.toString());
         }
     });
 }
-run();
+function cleanup() {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            if (customCleanup && !exportOnly) {
+                (0,core.info)(`Running custom cleanup`);
+                const output = external_child_process_namespaceObject.execSync(customCleanup).toString("utf-8");
+                (0,core.info)(`Custom cleanup output:\n${output}`);
+            }
+            else {
+                (0,core.info)(`No cleanup needed`);
+            }
+        }
+        catch (error) {
+            (0,core.setFailed)(error instanceof Error ? error : error.toString());
+        }
+    });
+}
+if (Boolean(process.env['STATE_isPost'])) {
+    cleanup();
+}
+else {
+    run();
+}
 
 })();
 
