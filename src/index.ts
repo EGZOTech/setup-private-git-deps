@@ -2,13 +2,13 @@ import { getInput, setFailed, info } from "@actions/core";
 import * as fs from "fs";
 import * as childProcess from "child_process";
 
+const customPrepare = getInput('custom-prepare', { required: false });
+const customCleanup = getInput('custom-cleanup', { required: false });
+const exportOnly = getInput('export-only', { required: false });
+const exportScript = getInput('export-script', { required: false });
+
 async function run(): Promise<void> {
     try {
-        const exportScript = getInput('export-script', { required: false });
-        const exportOnly = getInput('export-only', { required: false });
-        const customPrepare = getInput('custom-prepare', { required: false });
-        const customCleanup = getInput('custom-cleanup', { required: false });
-
         const dependencies = getInput('dependencies', { required: true });
         const dependenciesLines = dependencies.split("\n").filter(v => v.length > 0);
 
@@ -46,6 +46,12 @@ async function run(): Promise<void> {
         if (dependenciesLines.length === 0) {
             info(`No dependencies found`);
             return;
+        }
+
+        if (customPrepare) {
+            info(`Running custom prepare`);
+            const output = childProcess.execSync(customPrepare).toString("utf-8");
+            info(`Custom prepare output:\n${output}`)
         }
 
         info(`Found ${dependenciesLines.length / 2} dependencies`);
@@ -87,8 +93,28 @@ async function run(): Promise<void> {
         info(childProcess.execSync(`cat ~/.ssh/config`).toString("utf-8"));
     }
     catch (error) {
-        setFailed(error.message);
+        setFailed(error instanceof Error ? error : (error as any).toString());
     }
 }
 
-run();
+async function cleanup(): Promise<void> {
+    try {
+        if (customCleanup && !exportOnly) {
+            info(`Running custom cleanup`);
+            const output = childProcess.execSync(customCleanup).toString("utf-8");
+            info(`Custom cleanup output:\n${output}`)
+        }
+        else {
+            info(`No cleanup needed`);
+        }
+    } catch (error) {
+        setFailed(error instanceof Error ? error : (error as any).toString());
+    }
+}
+
+if (Boolean(process.env['STATE_isPost'])) {
+    cleanup();
+}
+else {
+    run();
+}
