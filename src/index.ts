@@ -125,7 +125,8 @@ async function run(): Promise<void> {
                 info("Removing identity key override from local git config.");
                 
                 sshCommandArgs.splice(identityFile, 2);
-                childProcess.execSync(`git config --local --unset-all core.sshcommand && git config --local --add core.sshcommand '${sshCommandArgs.join(" ")}'`);
+                childProcess.execSync(`git config --local --unset-all core.sshcommand`);
+                // childProcess.execSync(`git config --local --unset-all core.sshcommand && git config --local --add core.sshcommand '${sshCommandArgs.join(" ")}'`);
             }
         }
 
