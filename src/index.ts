@@ -12,7 +12,7 @@ function parseArgumentsIntoArray(args: string) {
     const result: string[] = [];
     let isInString = false;
 
-    for (let i = 0; i < split.length; i++) {       
+    for (let i = 0; i < split.length; i++) {
         if (isInString) {
             result[result.length - 1] = result[result.length - 1] + split[i];
         }
@@ -23,7 +23,7 @@ function parseArgumentsIntoArray(args: string) {
         if (split[i].startsWith("\"")) {
             isInString = true;
         }
-        
+
         if (split[i].endsWith("\"") && !split[i].endsWith("\\\"")) {
             isInString = false;
         }
@@ -109,10 +109,11 @@ async function run(): Promise<void> {
 
             childProcess.execSync(`git config --global --add url."git@github.com-repo-${index}:${repo}".insteadOf https://github.com/${repo}`);
             childProcess.execSync(`git config --global --add url."git@github.com-repo-${index}:${repo}".insteadOf ssh://git@github.com/${repo}`);
+            childProcess.execSync(`git config --global --add url."git@github.com-repo-${index}:${repo}".insteadOf github:${repo}`);
         }
 
-        let sshCommand = ""; 
-        
+        let sshCommand = "";
+
         try {
             childProcess.execSync(`git config --local --get core.sshcommand`).toString("utf-8");
         }
@@ -128,9 +129,9 @@ async function run(): Promise<void> {
                 // If sshcommand in git config overrides identity file we need to remove it
                 // otherwise our hosts in .ssh/config will not be able to use their own SSH keys
                 info("Removing identity key override from local git config.");
-                
+
                 sshCommandArgs.splice(identityFile, 2);
-             
+
                 // TODO: Fix this in the future. We should not remove whole core.sshcommand, only remove '-i' argument with its value.
                 //       But for some reason removing this argument broke whole SSH command.
                 childProcess.execSync(`git config --local --unset-all core.sshcommand`);

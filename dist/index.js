@@ -650,6 +650,7 @@ function run() {
                     `    IdentityFile ${process.env.HOME}/.ssh/github.com-repo-${index}\n\n`);
                 external_child_process_namespaceObject.execSync(`git config --global --add url."git@github.com-repo-${index}:${repo}".insteadOf https://github.com/${repo}`);
                 external_child_process_namespaceObject.execSync(`git config --global --add url."git@github.com-repo-${index}:${repo}".insteadOf ssh://git@github.com/${repo}`);
+                external_child_process_namespaceObject.execSync(`git config --global --add url."git@github.com-repo-${index}:${repo}".insteadOf github:${repo}`);
             }
             let sshCommand = "";
             try {
