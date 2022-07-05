@@ -34,7 +34,7 @@ function parseArgumentsIntoArray(args: string) {
 
 async function run(): Promise<void> {
     try {
-        const dependencies = getInput('dependencies', { required: true });
+        const dependencies = getInput('dependencies', { required: false }) || "";
         const dependenciesLines = dependencies.split("\n").filter(v => v.length > 0);
 
         if (exportScript) {
@@ -66,11 +66,6 @@ async function run(): Promise<void> {
 
         if (dependenciesLines.length % 2 !== 0) {
             throw new Error("Dependencies have invalid format.");
-        }
-
-        if (dependenciesLines.length === 0) {
-            info(`No dependencies found`);
-            return;
         }
 
         if (customPrepare) {

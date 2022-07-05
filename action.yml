@@ -11,7 +11,7 @@ inputs:
         org/repo:base64
         privkey:base64
         ...
-    required: true
+    required: false
   export-script:
     description: |-
       Exports a script file with specified name which can be used for accessing
