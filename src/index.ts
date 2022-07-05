@@ -134,11 +134,24 @@ async function run(): Promise<void> {
             }
         }
 
-        info("Git config global")
-        info(childProcess.execSync(`git config --global --list`).toString("utf-8"));
+        try {
+            const globalGitConfig = childProcess.execSync(`git config --global --list`).toString("utf-8");
+            info("Git config global")
+            info(globalGitConfig);
+        }
+        catch {
+            info("Git config global - does not exist");
+        }
 
-        info("SSH config")
-        info(childProcess.execSync(`cat ~/.ssh/config`).toString("utf-8"));
+        try {
+            const sshConfig = childProcess.execSync(`cat ~/.ssh/config`).toString("utf-8");
+            info("SSH config")
+            info(sshConfig);
+        }
+        catch {
+            info("SSH config - does not exist");
+        }
+
     }
     catch (error) {
         setFailed(error instanceof Error ? error : (error as any).toString());

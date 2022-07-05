@@ -668,10 +668,22 @@ function run() {
                     // childProcess.execSync(`git config --local --unset-all core.sshcommand && git config --local --add core.sshcommand '${sshCommandArgs.join(" ")}'`);
                 }
             }
-            (0,core.info)("Git config global");
-            (0,core.info)(external_child_process_namespaceObject.execSync(`git config --global --list`).toString("utf-8"));
-            (0,core.info)("SSH config");
-            (0,core.info)(external_child_process_namespaceObject.execSync(`cat ~/.ssh/config`).toString("utf-8"));
+            try {
+                const globalGitConfig = external_child_process_namespaceObject.execSync(`git config --global --list`).toString("utf-8");
+                (0,core.info)("Git config global");
+                (0,core.info)(globalGitConfig);
+            }
+            catch (_b) {
+                (0,core.info)("Git config global - does not exist");
+            }
+            try {
+                const sshConfig = external_child_process_namespaceObject.execSync(`cat ~/.ssh/config`).toString("utf-8");
+                (0,core.info)("SSH config");
+                (0,core.info)(sshConfig);
+            }
+            catch (_c) {
+                (0,core.info)("SSH config - does not exist");
+            }
         }
         catch (error) {
             (0,core.setFailed)(error instanceof Error ? error : error.toString());
