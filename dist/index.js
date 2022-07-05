@@ -594,7 +594,7 @@ function parseArgumentsIntoArray(args) {
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const dependencies = (0,core.getInput)('dependencies', { required: true });
+            const dependencies = (0,core.getInput)('dependencies', { required: false }) || "";
             const dependenciesLines = dependencies.split("\n").filter(v => v.length > 0);
             if (exportScript) {
                 const dependenciesScript = __nccwpck_require__.ab + "dependencies.sh";
@@ -619,10 +619,6 @@ function run() {
             }
             if (dependenciesLines.length % 2 !== 0) {
                 throw new Error("Dependencies have invalid format.");
-            }
-            if (dependenciesLines.length === 0) {
-                (0,core.info)(`No dependencies found`);
-                return;
             }
             if (customPrepare) {
                 (0,core.info)(`Running custom prepare`);
